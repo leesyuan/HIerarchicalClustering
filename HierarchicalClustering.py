@@ -100,7 +100,7 @@ def plot_top_publishers(df):
 st.title('Hierarchical Clustering Analysis of Video Games Sales Data')
 
 # Load your data here
-# df = pd.read_csv('your_data.csv') # Example for loading data
+df = pd.read_csv('vgsales.csv') # Example for loading data
 
 # Assuming df is available in the environment
 df = pd.DataFrame()  # Placeholder; replace with actual data loading
