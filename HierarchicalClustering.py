@@ -60,8 +60,8 @@ def plot_tsne_3d(X_tsne_3d, y_hc):
                         opacity=0.8, width=800, height=600)
     st.plotly_chart(fig)
 
-# Handling missing values and errors in CSV columns
-def validate_data(df):
+# Handling column errors in CSV columns
+def validate_columns(df):
     required_columns = ['Year', 'NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales', 'Global_Sales']
     
     # Check for missing columns
@@ -69,6 +69,7 @@ def validate_data(df):
         if col not in df.columns:
             st.error(f"Column '{col}' is missing from the dataset. Please upload a valid CSV file.")
             return False
+    return True
 
 # Streamlit app layout
 st.title('Hierarchical Clustering Analysis of Video Games Sales Data')
@@ -84,8 +85,18 @@ if uploaded_file is not None:
     st.write("Here are the first few rows of your file:")
     st.write(df.head())
     
-    # Check if data is valid
-    if validate_data(df):
+    # Preprocessing Step 1: Replace 0s in 'Year' column with NaN
+    df['Year'] = df['Year'].replace(0, np.nan)
+    
+    # Preprocessing Step 2: Forward-fill the missing values in 'Year' column
+    df['Year'] = df['Year'].ffill()
+    
+    # Preprocessing Step 3: Replace NaN values in 'Publisher' column with 'Unknown'
+    if 'Publisher' in df.columns:
+        df['Publisher'] = df['Publisher'].fillna('Unknown')
+
+    # Check if data has required columns
+    if validate_columns(df):
         try:
             # Selecting features for clustering
             X = df[['Year', 'NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales', 'Global_Sales']]
