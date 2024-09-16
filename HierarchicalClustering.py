@@ -130,11 +130,6 @@ if uploaded_file is not None:
 else:
     st.write("Please upload a CSV file to proceed.")
 
-# Load your data here
-df = pd.read_csv('uploaded_file') # Example for loading data
-
-# Assuming df is available in the environment
-df = pd.DataFrame()  # Placeholder; replace with actual data loading
 
 # Selecting features for clustering
 X = df[['Year', 'NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales', 'Global_Sales']]
