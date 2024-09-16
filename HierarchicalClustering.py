@@ -1,3 +1,16 @@
+import streamlit as st
+import pandas as pd
+import numpy as np
+from scipy.cluster.hierarchy import dendrogram, linkage
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.cluster import AgglomerativeClustering
+from sklearn.metrics import silhouette_score, davies_bouldin_score
+import matplotlib.pyplot as plt
+import plotly.express as px
+from sklearn.manifold import TSNE
+import seaborn as sns
+
 # Function to plot dendrogram
 def plot_dendrogram(Z):
     plt.figure(figsize=(10, 7))
