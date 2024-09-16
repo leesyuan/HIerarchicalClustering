@@ -70,7 +70,77 @@ def validate_columns(df):
             st.error(f"Column '{col}' is missing from the dataset. Please upload a valid CSV file.")
             return False
     return True
+    
+# Function to plot average sales per cluster
+def plot_avg_sales_per_cluster(df):
+    numerical_columns = ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales', 'Year']
+    
+    # Group the data by 'Cluster' and calculate the mean of each numerical column
+    cluster_means = df.groupby('Cluster')[numerical_columns].mean()
+    
+    # Select sales columns for the bar graph
+    sales_columns = ['NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']
+    
+    # Create the bar graph
+    cluster_means[sales_columns].plot(kind='bar', figsize=(10, 6))
+    plt.title('Average Sales per Cluster')
+    plt.xlabel('Cluster')
+    plt.ylabel('Average Sales')
+    plt.xticks(rotation=0)
+    plt.legend(title='Sales Region')
+    st.pyplot(plt)
 
+# Function to plot genre distribution per cluster
+def plot_genre_distribution(df):
+    # Group the data by cluster and genre, then count the occurrences of each genre within each cluster
+    genre_counts = df.groupby(['Cluster', 'Genre'])['Genre'].count().unstack()
+    
+    # Create the bar chart
+    genre_counts.plot(kind='bar', figsize=(12, 6))
+    plt.title('Genre Distribution per Cluster')
+    plt.xlabel('Cluster')
+    plt.ylabel('Number of Games')
+    plt.xticks(rotation=0)
+    plt.legend(title='Genre')
+    st.pyplot(plt)
+
+# Function to plot platform distribution per cluster
+def plot_platform_distribution(df):
+    # Group the data by cluster and platform, then count the occurrences of each platform within each cluster
+    platform_counts = df.groupby(['Cluster', 'Platform'])['Platform'].count().unstack()
+
+    # Create the bar chart
+    platform_counts.plot(kind='bar', figsize=(15, 6))
+    plt.title('Platform Distribution per Cluster')
+    plt.xlabel('Cluster')
+    plt.ylabel('Number of Games')
+    plt.xticks(rotation=0)
+    plt.legend(title='Platform')
+    st.pyplot(plt)
+
+# Function to plot top publishers pie charts for each cluster
+def plot_top_publishers(df):
+    # Group the data by cluster and publisher, then count the occurrences of each publisher within each cluster
+    publisher_counts = df.groupby(['Cluster', 'Publisher'])['Publisher'].count().unstack()
+
+    # Select the top 10 publishers for each cluster and handle NaN values by filling them with 0
+    top_publishers = publisher_counts.apply(lambda x: x.nlargest(10), axis=1).fillna(0)
+
+    # Iterate through each cluster to plot the pie charts
+    for cluster in top_publishers.index:
+        # Get the publisher counts for the current cluster
+        cluster_counts = top_publishers.loc[cluster]
+
+        # Filter out publishers with zero counts (to avoid empty pie slices)
+        cluster_counts = cluster_counts[cluster_counts > 0]
+
+        # Create the pie chart
+        plt.figure(figsize=(6, 4))
+        plt.pie(cluster_counts, labels=cluster_counts.index, autopct='%1.1f%%', startangle=90)
+        plt.title(f'Top 10 Publishers in Cluster {cluster}')
+        plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        st.pyplot(plt)
+        st.write()
 # Streamlit app layout
 st.title('Hierarchical Clustering Analysis of Video Games Sales Data')
 
