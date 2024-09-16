@@ -69,13 +69,6 @@ def validate_data(df):
         if col not in df.columns:
             st.error(f"Column '{col}' is missing from the dataset. Please upload a valid CSV file.")
             return False
-    
-    # Check for NaN or missing values
-    if df[required_columns].isnull().any().any():
-        st.error("The dataset contains missing values. Please clean your data and try again.")
-        return False
-    
-    return True
 
 # Streamlit app layout
 st.title('Hierarchical Clustering Analysis of Video Games Sales Data')
