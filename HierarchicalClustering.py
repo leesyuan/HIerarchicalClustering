@@ -170,7 +170,6 @@ if uploaded_file is not None:
     if validate_columns(df):
         try:
             # User Input: Number of Clusters and Linkage Method
-            num_clusters = st.slider('Select Number of Clusters:', min_value=2, max_value=10, value=2)
             linkage_method = st.selectbox('Select Linkage Method:', ('ward', 'complete', 'average', 'single'))
             # Selecting features for clustering
             X = df[['Year', 'NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales', 'Global_Sales']]
@@ -180,23 +179,15 @@ if uploaded_file is not None:
             X_scaled = scaler.fit_transform(X)
 
             # Perform hierarchical clustering to generate the linkage matrix
-            Z = linkage(X_scaled, method='ward')
+            Z = linkage(X_scaled, method=linkage_method)
 
             # Plot the dendrogram
             st.subheader('Dendrogram')
             plot_dendrogram(Z)
 
-            # Different linkage methods
-            linkage_methods = ['ward', 'complete', 'average', 'single']
-            st.subheader('Silhouette Scores for Different Linkage Methods')
-            for method in linkage_methods:
-                hc = AgglomerativeClustering(n_clusters=2, linkage=method)
-                y_hc = hc.fit_predict(X_scaled)
-                silhouette_avg = silhouette_score(X_scaled, y_hc)
-                st.write(f'For {method} linkage, the Silhouette Score is {silhouette_avg}')
-
+            num_clusters = st.slider('Select Number of Clusters:', min_value=2, max_value=10, value=2)
             # Agglomerative Clustering with complete linkage
-            hc = AgglomerativeClustering(n_clusters=2, linkage='complete')
+            hc = AgglomerativeClustering(num_clusters, linkage=linkage_method)
             y_hc = hc.fit_predict(X_scaled)
 
             # Metrics
