@@ -112,8 +112,26 @@ def plot_top_publishers(df):
 # Streamlit app layout
 st.title('Hierarchical Clustering Analysis of Video Games Sales Data')
 
+# Add a file uploader to allow users to upload CSV files
+uploaded_file = st.file_uploader("Upload your CSV file", type=["csv"])
+
+if uploaded_file is not None:
+    # Read the uploaded CSV file into a DataFrame
+    df = pd.read_csv(uploaded_file)
+
+    # Display the first few rows of the DataFrame
+    st.write("Here are the first few rows of your file:")
+    st.write(df.head())
+    
+    # Perform your analysis or visualization on the uploaded data
+    # For example, show basic info about the dataset
+    st.write("Dataset Info:")
+    st.write(df.info())
+else:
+    st.write("Please upload a CSV file to proceed.")
+
 # Load your data here
-df = pd.read_csv('vgsales.csv') # Example for loading data
+df = pd.read_csv('uploaded_file') # Example for loading data
 
 # Assuming df is available in the environment
 df = pd.DataFrame()  # Placeholder; replace with actual data loading
